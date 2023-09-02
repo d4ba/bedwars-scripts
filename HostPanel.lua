@@ -33,6 +33,11 @@ AbilityService.createAbility("Emerald Gear",KeyCode.M,{
     progressPerUse = 1,
     iconImage = "rbxthumb://type=Asset&id=11425725303&w=420&h=420"
 })
+AbilityService.createAbility("Clear Inventory",KeyCode.N,{
+    maxProgress = 1,
+    progressPerUse = 1,
+    iconImage = "rbxthumb://type=Asset&id=14651604517&w=420&h=420"
+})
 AbilityService.createAbility("Win Game",KeyCode.L,{
     maxProgress = 1,
     progressPerUse = 1,
@@ -47,6 +52,8 @@ for _, plr in pairs(PlayerService.getPlayers()) do
         AbilityService.enableAbility(plr,"Disable Godmode")
         AbilityService.enableAbility(plr,"Enable Godmode")
         AbilityService.enableAbility(plr,"Give 100 Forge Points")
+        AbilityService.enableAbility(plr,"Emerald Gear")
+        AbilityService.enableAbility(plr,"Clear Inventory")
         AbilityService.enableAbility(plr,"Win Game")
     end
 end
@@ -86,23 +93,22 @@ Events.UseAbility(function (event)
     if event.abilityName == "Emerald Gear" then
         InventoryService.giveItem(plr,ItemType.EMERALD_HELMET,1,false)
         InventoryService.giveItem(plr,ItemType.EMERALD_CHESTPLATE,1,false)
-        InventoryService.giveItem(plr,ItemType.EMERALD_HELMET,1,false)
+        InventoryService.giveItem(plr,ItemType.EMERALD_BOOTS,1,false)
         InventoryService.giveItem(plr,ItemType.EMERALD_SWORD,1,false)
         InventoryService.giveItem(plr,ItemType.EMERALD,20,false)
+    end
+    if event.abilityName == "Clear Inventory" then
+        MessageService.sendInfo(plr,"Cleared inventory.")
+        InventoryService.clearInventory(event.entity:getPlayer())
     end
 end)
 
 Events.EntityDamage(function (event)
-    if event.entity:getPlayer().name == MatchService:getHost().name then
-        if (godmodeenabled == true) then
-            local oldHealth = event.entity.getMaxHealth()
-            event.entity:setMaxHealth(10000)
-            CombatService.heal(event.entity,10000)
-            task.wait(0.1)
-            event.entity:setMaxHealth(oldHealth)
-        end
-        if (godmodeenabled == false) then
-            print("ok")
+    if event.entity:getPlayer().name == MatchService.getHost().name then
+        if godmodeenabled == true then
+            print("hit")
+            print(tostring(event.damage))
+            CombatService.heal(event.entity,event.damage)
         end
     end
 end)
